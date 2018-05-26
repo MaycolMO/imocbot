@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+  <meta name="theme-color" content="#0BAEDE">
+  <meta name="author" content="EQUIPO DE INVESTIGACION CIENTIFICA">
+  <meta name="description" content="Aprende todo sobre tu Universidad Nacional del Santa; conversa con nuestro chatbot ALISE">
+	<title>iMOC</title>
+
+	<!-- for mobile screens -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<!-- stylesheets are conveniently separated into components -->
+	<link rel="stylesheet" media="all" href="setup.css">
+	<link rel="stylesheet" media="all" href="says.css">
+	<link rel="stylesheet" media="all" href="reply.css">
+	<link rel="stylesheet" media="all" href="typing.css">
+	<link rel="stylesheet" media="all" href="input.css">
+	<style>
+	body {
+		background: #16B1F0  ;
+	}
+	.head{
+		background: #04A2E1     ; 
+	}
+	.bubble-container {
+		height: 100vh;
+	}
+	.bubble-container .input-wrap textarea {
+		margin: 0;
+		width: calc(100% - 30px);
+	}
+	</style>
+</head>
+<header class="head">
+	
+	<center>
+		<!--<h1><font color="#EBF3E7  ">TINDER </font></h1><hr class="maycol">-->
+		<a href="inde.html" title=""> <img src="nube.png" alt=""  height="50px" width="190px"></a>
+	</center>
+</header>
+<body>
+
+	
+
+<!-- container element for chat window -->
+<div id="chat"></div>
+
+<!-- import the JavaScript file -->
+<script src="Bubbles.js"></script>
+<script>
+// initialize by constructing a named function...
+// ...and add text processing plugin:
+var chatWindow = new Bubbles(document.getElementById("chat"), "chatWindow", {
+  // the one that we care about is inputCallbackFn()
+  // this function returns an object with some data that we can process from user input
+  // and understand the context of it
+
+  // this is an example function that matches the text user typed to one of the answer bubbles
+  // this function does no natural language processing
+  // this is where you may want to connect this script to NLC backend.
+  inputCallbackFn: function(o) {
+    // add error conversation block & recall it if no answer matched
+    var miss = function() {
+      chatWindow.talk(
+        {
+          "i-dont-get-it": {
+            says: [
+              "Lo siento,no hablo de esas cosas 😕. Por favor  elije otro asistente en el menù ? o intentalo de nuevo 👇"
+            ],
+            reply: o.convo[o.standingAnswer].reply
+          }
+        },
+        "i-dont-get-it"
+      )
+    }
+
+    // do this if answer found
+    var match = function(key) {
+      setTimeout(function() {
+        chatWindow.talk(convo, key) // restart current convo from point found in the answer
+      }, 600)
+    }
+
+    // sanitize text for search function
+    var strip = function(text) {
+      return text.toLowerCase().replace(/[\s.,\/#!$%\^&\*;:{}=\-_'"`~()]/g, "")
+    }
+
+    // search function
+    var found = false
+    o.convo[o.standingAnswer].reply.forEach(function(e, i) {
+      strip(e.question).includes(strip(o.input)) && o.input.length > 0
+        ? (found = e.answer)
+        : found ? null : (found = false)
+    })
+    found ? match(found) : miss()
+  }
+}) // done setting up chat-bubble
+
+// conversation object defined separately, but just the same as in the
+// "Basic chat-bubble Example" (1-basics.html)
+var convo = {
+  ice: {
+    says: ["Hola",  "<img src=https://media.giphy.com/media/Cmr1OMJ2FN0B2/giphy.gif  />"     ,"Mi nombe es iMOC y soy un bot", "Que quieres consultar de la Universidad Nacional Del Santa?"],
+    reply: [
+      {
+        question: "CODIGOS DE PAGO(UNS)",
+        answer: "banana"
+      },
+
+
+      {
+        question: "Lugares",
+        answer: "ice-cream"
+      }
+
+
+    ]
+  },
+  banana: {
+    says: ["Estos son los codigos de pago de la UNS"],
+    says: [" <a href=https://scontent.flim6-1.fna.fbcdn.net/v/t1.0-9/30705115_1877239245649238_1273500763891252602_n.jpg?_nc_cat=0&_nc_eui2=AeHPcweB2Gw83EFsyZOWH1rdvQvJXZaTX6sQpjQDXMOSWnPMeKzBLfBl6RwPu6XRu5Cz9gY7W29YCbJKHzlFqnqXtTWiDmEMXOK_wxtCFiQCFA&oh=e35ce9ca5f9def5a1296a83dc6eee286&oe=5B7E4BAB >  <img src=https://scontent.flim6-1.fna.fbcdn.net/v/t1.0-9/30705115_1877239245649238_1273500763891252602_n.jpg?_nc_cat=0&_nc_eui2=AeHPcweB2Gw83EFsyZOWH1rdvQvJXZaTX6sQpjQDXMOSWnPMeKzBLfBl6RwPu6XRu5Cz9gY7W29YCbJKHzlFqnqXtTWiDmEMXOK_wxtCFiQCFA&oh=e35ce9ca5f9def5a1296a83dc6eee286&oe=5B7E4BAB > </a>  "],
+    reply: [
+      {
+        question: "Repetir todo de nuevo por que esto es un avance de todo el proyecto",
+        answer: "ice"
+      }
+    ]
+  },
+  "ice-cream": {
+    says: ["🍦"],
+    reply: [
+      {
+        question: "",
+        answer: "ice"
+      }
+    ]
+  }
+}
+
+		
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// pass JSON to your function and you're done!
+chatWindow.talk(convo)
+</script>
+</body>
